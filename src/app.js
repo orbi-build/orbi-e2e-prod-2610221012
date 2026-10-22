@@ -1,4 +1,4 @@
-import { addTodo, toggleTodo, removeTodo, visibleTodos } from "./todo.js";
+import { addTodo, toggleTodo, removeTodo, visibleTodos, clearCompleted } from "./todo.js";
 
 let todos = [
   { id: 1, title: "Sign in to Orbi Cloud", done: true },
@@ -16,6 +16,7 @@ const status = document.querySelector("#app-status");
 const error = document.querySelector("#input-error");
 const empty = document.querySelector("#empty-list");
 const filters = document.querySelectorAll("[data-filter]");
+const clearButton = document.querySelector("#clear-completed");
 
 // Rerendering removes focused controls. Return focus to the same task or its
 // next neighbour so keyboard users can continue toggling and deleting tasks.
@@ -95,4 +96,12 @@ for (const button of filters) {
     status.textContent = `Showing ${filter} tasks.`;
   });
 }
+clearButton.addEventListener("click", () => {
+  const remaining = clearCompleted(todos);
+  // Nothing completed: leave the list, focus and status untouched.
+  if (remaining.length === todos.length) return;
+  todos = remaining;
+  render();
+  status.textContent = "Completed tasks cleared.";
+});
 render();
